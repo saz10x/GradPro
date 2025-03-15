@@ -1,0 +1,88 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Home | CyberSecurity Training Platform{% endblock %}
+
+{% block content %}
+<section class="hero-section text-center py-5">
+    <div class="container">
+        <h1 class="display-4 hero-title">CyberSecurity Training Platform</h1>
+        <p class="lead hero-subtitle">
+            Where you can enhance your skills and prepare for real-world cyber threats
+            through interactive scenarios and expert resources
+        </p>
+    </div>
+</section>
+
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mission-box p-4 mb-4">
+                    <p>We are dedicated to empowering individuals and organizations with 
+                    the knowledge and skills needed to navigate the complex landscape 
+                    of cybersecurity.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mission-box p-4 mb-4">
+                    <p>Our comprehensive training prepares users for real-world cyber threats 
+                    through engaging and interactive learning experiences.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="feature-box p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-bullseye" style="color: #e74c3c;"></i>
+                    </div>
+                    <h3 class="feature-title">Test your Knowledge</h3>
+                    <p>Interactive assessments and practical challenges to evaluate your cybersecurity expertise</p>
+                    <a href="/training/" class="btn btn-outline-light">Start Testing</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-shield-lock" style="color: #3498db;"></i>
+                    </div>
+                    <h3 class="feature-title">Keep your System Safe</h3>
+                    <p>Learn best practices for maintaining secure systems and protecting digital assets</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-book" style="color: #2ecc71;"></i>
+                    </div>
+                    <h3 class="feature-title">Learn more about Attacks</h3>
+                    <p>Deep dive into various attack vectors and defense strategies</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="offering-section py-5">
+    <div class="container">
+        <h2 class="section-title mb-4">What We Offer?</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="offer-box p-4">
+                    <h3 class="offer-title">Scenario-Based Experience</h3>
+                    <p>Enhance your understanding of various cyber threats, including ransomware, phishing, and insider threats through immersive simulations.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="offer-box p-4">
+                    <h3 class="offer-title">Performance Tracking</h3>
+                    <p>Monitor your progress and receive personalized feedback to continuously improve your skills.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

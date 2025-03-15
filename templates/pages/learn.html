@@ -1,0 +1,86 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/learn.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="learn-container">
+    <!-- قسم العنوان -->
+    <div class="header-section">
+        <h1 class="fancy-title">Attacks</h1>
+        <p class="subtitle">
+            Understanding various types of cyberattacks is crucial for effective defense strategies. Here, we explore three common types of cyberattacks that organizations face today.
+        </p>
+    </div>
+
+    <!-- قسم أنواع الهجمات -->
+    <div class="attacks-section">
+        <h2 class="section-title">Three types of attacks</h2>
+        
+        <div class="attack-cards">
+            <div class="attack-card ransomware">
+                <h3>Ransomware</h3>
+                <p>Ransomware is a type of malware that encrypts files, rendering them inaccessible until a ransom is paid to the attackers.</p>
+            </div>
+            
+            <div class="attack-card ddos">
+                <h3>Distributed Denial-of-Service</h3>
+                <p>DDoS attacks attempt to disrupt the normal functioning of a targeted server, service, or network by overwhelming it with traffic.</p>
+            </div>
+            
+            <div class="attack-card mitm">
+                <h3>Man-in-the-Middle</h3>
+                <p>MitM attacks occur when attackers position themselves between two parties to intercept communications.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم النصائح والحماية (ثابت بدون انتقالات) -->
+    <div class="protection-section">
+        <h2 class="section-title">Be aware and Safe</h2>
+        
+        <div class="static-protection-grid">
+            <!-- بطاقة Ransomware -->
+            <div class="protection-box ransomware-box">
+                <div class="protection-header">
+                    <div class="icon-circle">🔒</div>
+                    <h3>Ransomware Protection</h3>
+                </div>
+                <div class="protection-body">
+                    <div class="tip-item">Keep regular backups</div>
+                    <div class="tip-item">Update software regularly</div>
+                    <div class="tip-item">Use anti-malware protection</div>
+                </div>
+            </div>
+            
+            <!-- بطاقة DDoS -->
+            <div class="protection-box ddos-box">
+                <div class="protection-header">
+                    <div class="icon-circle">🛡️</div>
+                    <h3>DDoS Protection</h3>
+                </div>
+                <div class="protection-body">
+                    <div class="tip-item">Implement rate limiting</div>
+                    <div class="tip-item">Use cloud-based protection services</div>
+                    <div class="tip-item">Configure network hardware properly</div>
+                </div>
+            </div>
+            
+            <!-- بطاقة MitM -->
+            <div class="protection-box mitm-box">
+                <div class="protection-header">
+                    <div class="icon-circle">🔐</div>
+                    <h3>MitM Protection</h3>
+                </div>
+                <div class="protection-body">
+                    <div class="tip-item">Use encrypted connections (HTTPS)</div>
+                    <div class="tip-item">Verify website certificates</div>
+                    <div class="tip-item">Use Virtual Private Networks (VPNs)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
