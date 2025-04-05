@@ -5,3 +5,4 @@ create the project and complete
 3. learn page
 4. database
 5. user log in and sign in
+6. select attack type after log in
