@@ -1,0 +1,166 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}About Us | CyberSecurity Training Platform{% endblock %}
+
+{% block content %}
+<section class="hero-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 text-center">
+                <h1 class="hero-title mb-4">Together, we can build more secure digital world</h1>
+                <p class="hero-subtitle mb-5">Thank you for choosing us as your partner in cybersecurity education!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-12">
+                <div class="mission-box p-4">
+                    <h2 class="feature-title mb-3">Our Mission</h2>
+                    <p>To provide high-quality, interactive training experiences and equip users with the tools and knowledge necessary to respond to real-world cyber incidents.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-lg-12">
+                <div class="mission-box p-4">
+                    <h2 class="feature-title mb-3">Our Approach</h2>
+                    <p>Our training modules are designed by industry experts and reflect the latest trends and threats in cybersecurity. We utilize real-world scenarios, interactive simulations, and practical exercises to ensure that learners not only understand the theory but also gain hands-on experience in dealing with incidents.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <div class="col-lg-12">
+                <div class="mission-box p-4">
+                    <h2 class="feature-title mb-3">Why Choose Us?</h2>
+                    <ul class="mb-0">
+                        <li class="mb-3">
+                            <strong>Expertise:</strong> Our team consists of seasoned cybersecurity professionals with years of experience in the field.
+                        </li>
+                        <li class="mb-3">
+                            <strong>Interactive Learning:</strong> We believe in learning by doing. Our modules include videos and scenario-based training to keep you engaged.
+                        </li>
+                        <li>
+                            <strong>Tailored Content:</strong> Whether you are a beginner or an experienced professional, our training is designed to meet your specific needs.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-dark">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="feature-box p-4">
+                    <div class="feature-icon mb-3 mx-auto">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h3 class="text-purple mb-3">1000+</h3>
+                    <p class="mb-0">Active Users</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="feature-box p-4">
+                    <div class="feature-icon mb-3 mx-auto">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h3 class="text-purple mb-3">50+</h3>
+                    <p class="mb-0">Training Scenarios</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box p-4">
+                    <div class="feature-icon mb-3 mx-auto">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <h3 class="text-purple mb-3">95%</h3>
+                    <p class="mb-0">Success Rate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<style>
+    .hero-title {
+        color: #8e44ad;
+        font-size: 3rem;
+        font-weight: 700;
+        text-shadow: 0 0 20px rgba(142, 68, 173, 0.5);
+    }
+    
+    .text-purple {
+        color: #8e44ad;
+    }
+    
+    .team-img img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 3px solid #8e44ad;
+        padding: 3px;
+        background-color: #222;
+    }
+    
+    .mission-box, .team-member {
+        background-color: rgba(20, 20, 20, 0.8);
+        border-radius: 8px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .mission-box::before, .team-member::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(to right, #8e44ad, #3498db);
+    }
+    
+    .mission-box:hover, .team-member:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(142, 68, 173, 0.3);
+    }
+    
+    .feature-box {
+        background-color: rgba(30, 30, 30, 0.6);
+        border-radius: 8px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        height: 100%;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feature-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(142, 68, 173, 0.3);
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8e44ad;
+        font-size: 2rem;
+        border-radius: 50%;
+        background-color: rgba(20, 20, 20, 0.8);
+        border: 1px solid rgba(142, 68, 173, 0.3);
+    }
+</style>
+{% endblock %}

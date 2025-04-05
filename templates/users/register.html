@@ -1,0 +1,298 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Create Account | CyberSecurity Training Platform{% endblock %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="auth-box p-4">
+                    <h2 class="auth-title text-center mb-4">Create Your Account</h2>
+                    
+                    <form method="post" action="{% url 'register' %}">
+                        {% csrf_token %}
+                        
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter your first name" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter your last name" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-briefcase-fill"></i></span>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="" selected disabled>Select your role</option>
+                                    <option value="IT_MANAGER">IT Manager</option>
+                                    <option value="SECURITY_ANALYST">Security Analyst</option>
+                                    <option value="EMPLOYEE">Employee</option>
+                                    <option value="IT_SPECIALIST">IT Specialist</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" class="form-control" id="password" name="password" 
+                                           placeholder="Enter your password" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength mt-2" id="passwordStrength">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted">Password strength: <span id="strengthText">Very Weak</span></small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" 
+                                           placeholder="Confirm your password" required>
+                                </div>
+                                <div id="passwordMatch" class="form-text"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary w-100 register-btn">
+                                <i class="bi bi-person-plus-fill me-2"></i> Create Account
+                            </button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p>Already have an account? <a href="{% url 'login' %}" class="login-link">Login</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CSS Styles specific to auth pages -->
+<style>
+    .auth-section {
+        min-height: calc(100vh - 300px);
+        display: flex;
+        align-items: center;
+    }
+    
+    .auth-box {
+        background-color: rgba(20, 20, 20, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(to right, #8e44ad, #3498db);
+    }
+    
+    .auth-title {
+        color: #8e44ad;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        color: #ddd;
+        font-weight: 500;
+    }
+    
+    .input-group-text {
+        background-color: #8e44ad;
+        color: white;
+        border: none;
+    }
+    
+    .form-control, .form-select {
+        background-color: #222;
+        border: 1px solid #444;
+        color: white;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        background-color: #222;
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+        color: white;
+    }
+    
+    .form-select option {
+        background-color: #222;
+        color: white;
+    }
+    
+    .register-btn {
+        background-color: #8e44ad;
+        border: none;
+        padding: 10px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .register-btn:hover {
+        background-color: #6c3483;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+    }
+    
+    .login-link, .terms-link {
+        color: #8e44ad;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .login-link:hover, .terms-link:hover {
+        color: #6c3483;
+        text-decoration: underline;
+    }
+    
+    /* Custom checkbox */
+    .form-check-input {
+        background-color: #222;
+        border: 1px solid #444;
+    }
+    
+    .form-check-input:checked {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+    }
+    
+    /* Password strength */
+    .password-strength .progress {
+        height: 5px;
+        background-color: #444;
+    }
+    
+    .password-strength .progress-bar {
+        background-color: #8e44ad;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+        
+        if (togglePassword && password) {
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                
+                // Toggle icon
+                this.querySelector('i').classList.toggle('bi-eye');
+                this.querySelector('i').classList.toggle('bi-eye-slash');
+            });
+        }
+        
+        // Password strength meter
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.querySelector('.password-strength .progress-bar');
+        const strengthText = document.getElementById('strengthText');
+        
+        passwordInput.addEventListener('input', function() {
+            const value = passwordInput.value;
+            let strength = 0;
+            
+            if (value.length >= 8) strength += 20;
+            if (/[A-Z]/.test(value)) strength += 20;
+            if (/[a-z]/.test(value)) strength += 20;
+            if (/[0-9]/.test(value)) strength += 20;
+            if (/[^A-Za-z0-9]/.test(value)) strength += 20;
+            
+            strengthBar.style.width = strength + '%';
+            
+            if (strength <= 20) {
+                strengthBar.style.backgroundColor = '#dc3545'; // red
+                strengthText.textContent = 'Very Weak';
+            } else if (strength <= 40) {
+                strengthBar.style.backgroundColor = '#ffc107'; // yellow
+                strengthText.textContent = 'Weak';
+            } else if (strength <= 60) {
+                strengthBar.style.backgroundColor = '#fd7e14'; // orange
+                strengthText.textContent = 'Fair';
+            } else if (strength <= 80) {
+                strengthBar.style.backgroundColor = '#20c997'; // teal
+                strengthText.textContent = 'Good';
+            } else {
+                strengthBar.style.backgroundColor = '#28a745'; // green
+                strengthText.textContent = 'Strong';
+            }
+        });
+        
+        // Password match check
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordMatch = document.getElementById('passwordMatch');
+        
+        confirmPassword.addEventListener('input', function() {
+            if (password.value === confirmPassword.value) {
+                passwordMatch.textContent = 'Passwords match';
+                passwordMatch.classList.remove('text-danger');
+                passwordMatch.classList.add('text-success');
+            } else {
+                passwordMatch.textContent = 'Passwords do not match';
+                passwordMatch.classList.remove('text-success');
+                passwordMatch.classList.add('text-danger');
+            }
+        });
+    });
+</script>
+{% endblock %}

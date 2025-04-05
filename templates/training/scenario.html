@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/training.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="training-container">
+    <h1>{{ attack_type|capfirst }} Scenario</h1>
+    
+    <!-- محتوى السيناريو سيتم إضافته هنا -->
+    <p>This is a training scenario for {{ attack_type }}.</p>
+    
+    <a href="{% url 'training:select_attack' %}" class="btn btn-primary">Back to Selection</a>
+</div>
+{% endblock %}

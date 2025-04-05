@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CyberSecurity Training Platform{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- learn page css-->
+    <link rel="stylesheet" href="{% static 'css/learn.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #111;
+            color: #fff;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Network background effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(#8e44ad20 1px, transparent 1px),
+                radial-gradient(#8e44ad10 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Animated lines effect */
+        .line {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            background: rgba(142, 68, 173, 0.1);
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .line::after {
+            content: '';
+            display: block;
+            position: absolute;
+            height: 15vh;
+            width: 100%;
+            top: -50%;
+            left: 0;
+            background: linear-gradient(to bottom, rgba(142, 68, 173, 0) 0%, #8e44ad 75%, #8e44ad 100%);
+            animation: drop 7s 0s infinite;
+            animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+        }
+
+        @keyframes drop {
+            0% {
+                top: -50%;
+            }
+            100% {
+                top: 110%;
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem 0;
+        }
+
+        .cyber-icon {
+            color: #ff5500;
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        .nav-link {
+            margin: 0 12px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-link.active {
+            color: #8e44ad !important;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #8e44ad;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .get-started-btn {
+            background-color: #8e44ad;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            margin-left: 15px;
+            font-weight: 500;
+        }
+
+        .get-started-btn:hover {
+            background-color: #6c3483;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 5rem 0;
+        }
+
+        .hero-title {
+            color: #8e44ad;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(142, 68, 173, 0.5);
+        }
+
+        .hero-subtitle {
+            color: #ddd;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Feature Boxes */
+        .mission-box, .feature-box, .offer-box {
+            background-color: rgba(20, 20, 20, 0.8);
+            border-radius: 8px;
+            height: 100%;
+            border: 1px solid rgba(142, 68, 173, 0.2); 
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-box::before, .feature-box::before, .offer-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(142, 68, 173, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+            pointer-events: none;
+        }
+
+        .mission-box:hover, .feature-box:hover, .offer-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(142, 68, 173, 0.3);
+            border-color: rgba(142, 68, 173, 0.4);
+        }
+
+        .feature-title, .offer-title {
+            color: #8e44ad;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            color: #fff;
+            margin-bottom: 3rem;
+            font-weight: 600;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: #8e44ad;
+            font-size: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 2rem 0;
+            margin-top: 9rem;
+            border-top: 1px solid rgba(142, 68, 173, 0.3);
+        }
+
+        .footer-title {
+            color: #8e44ad;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-box {
+            background-color: #000;
+            border-radius: 8px;
+            max-width: 300px;
+            overflow: hidden;
+            margin-left: auto;
+            border: 1px solid rgba(142, 68, 173, 0.3);
+        }
+
+        .terminal-header {
+            background-color: #333;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ff5f57;
+            margin-right: 6px;
+        }
+
+        .dot:nth-child(2) {
+            background-color: #ffbd2e;
+        }
+
+        .dot:nth-child(3) {
+            background-color: #28ca41;
+        }
+
+        .terminal-content {
+            padding: 10px;
+            color: #00ff00;
+            font-family: monospace;
+        }
+
+        .contact-info {
+            margin-top: 1.5rem;
+        }
+
+        .contact-info p {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-info i {
+            color: #8e44ad;
+            margin-right: 10px;
+            width: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background lines -->
+    <div class="line" style="left: 20%;"></div>
+    <div class="line" style="left: 40%; animation-delay: 1s;"></div>
+    <div class="line" style="left: 60%; animation-delay: 2s;"></div>
+    <div class="line" style="left: 80%; animation-delay: 3s;"></div>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <span class="cyber-icon">⚡</span> Cybersecurity Training Platform
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+               
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'about' in request.path %}active{% endif %}" href="{% url 'about' %}">About us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'learn' in request.path %}active{% endif %}" href="{% url 'learn' %}">Learn more</a>
+                        </li>
+                        <li class="nav-item">
+                            <li class="nav-item">
+                                <a class="nav-link {% if 'training' in request.path %}active{% endif %}" href="/training/">Training</a>                     </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'contact' in request.path %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                        </li>
+                        
+                        {% if user.is_authenticated %}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ user.first_name|default:user.username }}
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+</li>
+{% else %}
+<li class="nav-item">
+    <a class="btn get-started-btn" href="{% url 'login' %}">Get Started</a>
+</li>
+{% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- محتوى الصفحة سيظهر هنا -->
+        {% endblock %}
+    </main>
+
+    <footer class="text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="footer-title"><span class="cyber-icon">⚡</span> Cybersecurity Training Platform</h5>
+                    <div class="contact-info">
+                        <p><i class="bi bi-telephone-fill"></i> (+968) 97955069</p>
+                        <p><i class="bi bi-envelope-fill"></i> 2020593197@utas.edu.om</p>
+                        <p><i class="bi bi-envelope-fill"></i> 2020593157@utas.edu.om</p>
+                        <p><i class="bi bi-envelope-fill"></i> 2020593083@utas.edu.om</p>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end d-flex align-items-end justify-content-end">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        <div class="terminal-content">
+                            > Stay_Secure
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>© 2025 All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+   
+    
+</body>
+</html>

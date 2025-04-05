@@ -1,0 +1,139 @@
+/* General styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #111;
+    color: #fff;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    z-index: -1;
+}
+
+/* Navigation */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 1rem 0;
+}
+
+.cyber-icon {
+    color: #ff5500;
+    font-size: 1.2em;
+}
+
+.get-started-btn {
+    background-color: #8e44ad;
+    border: none;
+    border-radius: 5px;
+}
+
+.get-started-btn:hover {
+    background-color: #6c3483;
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 5rem 0;
+}
+
+.hero-title {
+    color: #8e44ad;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.hero-subtitle {
+    color: #ddd;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Feature Boxes */
+.mission-box, .feature-box, .offer-box {
+    background-color: rgba(20, 20, 20, 0.8);
+    border-radius: 8px;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.mission-box:hover, .feature-box:hover, .offer-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.feature-title, .offer-title {
+    color: #8e44ad;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    color: #fff;
+    margin-bottom: 3rem;
+    font-weight: 600;
+}
+
+.feature-icon .icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Footer */
+footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 2rem 0;
+    margin-top: 2rem;
+}
+
+.terminal-box {
+    background-color: #000;
+    border-radius: 8px;
+    max-width: 300px;
+    overflow: hidden;
+    margin-left: auto;
+}
+
+.terminal-header {
+    background-color: #333;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ff5f57;
+    margin-right: 6px;
+}
+
+.dot:nth-child(2) {
+    background-color: #ffbd2e;
+}
+
+.dot:nth-child(3) {
+    background-color: #28ca41;
+}
+
+.terminal-content {
+    padding: 10px;
+    color: #00ff00;
+    font-family: monospace;
+}
+
+.contact-info p {
+    margin-bottom: 0.5rem;
+}

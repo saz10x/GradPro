@@ -1,0 +1,201 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-white fw-bold mb-3">WELCOME</h1>
+        <h2 class="h3 text-purple mb-4">Select the Attack Type</h2>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Ransomware Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 bg-dark-purple border-0 rounded-4 shadow-lg ransomware-card">
+                <div class="card-body p-4 text-center d-flex flex-column">
+                    <div class="icon-wrapper mb-3 mx-auto">
+                        <i class="fas fa-lock text-ransomware fs-1"></i>
+                    </div>
+                    <h3 class="card-title h4 text-ransomware mb-3">Ransomware</h3>
+                    <p class="card-text text-light-gray mb-4 flex-grow-1">
+                        Train to defend against malware that encrypts files and demands payment for decryption.
+                    </p>
+                    <a href="{% url 'training:scenario' attack_type='ransomware' %}" 
+                       class="btn btn-ransomware py-2 px-4 w-100">
+                        Start Training
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- DDoS Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 bg-dark-purple border-0 rounded-4 shadow-lg ddos-card">
+                <div class="card-body p-4 text-center d-flex flex-column">
+                    <div class="icon-wrapper mb-3 mx-auto">
+                        <i class="fas fa-cloud-download-alt text-ddos fs-1"></i>
+                    </div>
+                    <h3 class="card-title h4 text-ddos mb-3">DDoS</h3>
+                    <p class="card-text text-light-gray mb-4 flex-grow-1">
+                        Learn to mitigate attacks that disrupt services by overwhelming systems with traffic.
+                    </p>
+                    <a href="{% url 'training:scenario' attack_type='ddos' %}" 
+                       class="btn btn-ddos py-2 px-4 w-100">
+                        Start Training
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MitM Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 bg-dark-purple border-0 rounded-4 shadow-lg mitm-card">
+                <div class="card-body p-4 text-center d-flex flex-column">
+                    <div class="icon-wrapper mb-3 mx-auto">
+                        <i class="fas fa-random text-mitm fs-1"></i>
+                    </div>
+                    <h3 class="card-title h4 text-mitm mb-3">Man-in-the-Middle</h3>
+                    <p class="card-text text-light-gray mb-4 flex-grow-1">
+                        Practice detecting and preventing attacks that intercept communications between parties.
+                    </p>
+                    <a href="{% url 'training:scenario' attack_type='mitm' %}" 
+                       class="btn btn-mitm py-2 px-4 w-100">
+                        Start Training
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إضافة مكتبة Font Awesome للأيقونات -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+<style>
+    /* ألوان وأنماط أساسية */
+    body {
+        background-color: #090919;
+        color: #fff;
+    }
+    
+    .container {
+        max-width: 1200px;
+    }
+    
+    /* ألوان مخصصة */
+    .text-purple {
+        color: #a861ff;
+    }
+    
+    .bg-dark-purple {
+        background-color: #13132b;
+    }
+    
+    .text-light-gray {
+        color: #b8b8b8;
+    }
+    
+    /* أنماط البطاقات */
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .card:hover {
+        transform: translateY(-10px);
+    }
+    
+    /* أنماط أيقونات وألوان Ransomware */
+    .text-ransomware {
+        color: #9932CC;
+    }
+    
+    .btn-ransomware {
+        background-color: #9932CC;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-ransomware:hover {
+        background-color: #8A2BE2;
+        color: white;
+        box-shadow: 0 0 15px rgba(153, 50, 204, 0.5);
+    }
+    
+    .ransomware-card {
+        border-top: 4px solid #9932CC;
+    }
+    
+    /* أنماط أيقونات وألوان DDoS */
+    .text-ddos {
+        color: #4682B4;
+    }
+    
+    .btn-ddos {
+        background-color: #4682B4;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-ddos:hover {
+        background-color: #4169E1;
+        color: white;
+        box-shadow: 0 0 15px rgba(70, 130, 180, 0.5);
+    }
+    
+    .ddos-card {
+        border-top: 4px solid #4682B4;
+    }
+    
+    /* أنماط أيقونات وألوان MitM */
+    .text-mitm {
+        color: #3CB371;
+    }
+    
+    .btn-mitm {
+        background-color: #3CB371;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-mitm:hover {
+        background-color: #2E8B57;
+        color: white;
+        box-shadow: 0 0 15px rgba(60, 179, 113, 0.5);
+    }
+    
+    .mitm-card {
+        border-top: 4px solid #3CB371;
+    }
+    
+    /* دائرة الأيقونة */
+    .icon-wrapper {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover .icon-wrapper {
+        transform: scale(1.1);
+    }
+    
+    /* تخطيط متجاوب */
+    @media (max-width: 768px) {
+        .display-4 {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
