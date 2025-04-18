@@ -9,8 +9,20 @@ class Scenario(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     scenario_text = models.TextField()
     
+    # حقل لتخزين استجابة الذكاء الاصطناعي الكاملة
+    ai_response = models.JSONField(null=True, blank=True)
+    
+    # حقل لتخزين الاستجابة الخام غير المعالجة
+    raw_response = models.TextField(null=True, blank=True)
+    
     def __str__(self):
         return f"Scenario {self.scenario_id}"
+    
+    def get_questions(self):
+        """استخراج الأسئلة من استجابة الذكاء الاصطناعي إذا كانت متوفرة"""
+        if self.ai_response and 'questions' in self.ai_response:
+            return self.ai_response['questions']
+        return []
 
 # نموذج مجرد يحتوي على الحقول المشتركة
 class ScenarioDetailsBase(models.Model):
@@ -49,6 +61,9 @@ class Question(models.Model):
     question_text = models.TextField()
     question_type = models.CharField(max_length=50, default='multiple_choice')
     
+    # حقل لتخزين شرح الإجابة الصحيحة
+    explanation = models.TextField(null=True, blank=True)
+    
     def __str__(self):
         return f"Question {self.question_id} for Scenario {self.scenario.scenario_id}"
 
@@ -70,3 +85,16 @@ class Response(models.Model):
     
     def __str__(self):
         return f"Response {self.response_id} by {self.user.username}"
+
+# نموذج إضافي لتخزين نتيجة المستخدم الكاملة للسيناريو
+class UserScenarioResult(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
+    score = models.IntegerField()  # عدد الإجابات الصحيحة
+    total_questions = models.IntegerField()  # العدد الإجمالي للأسئلة
+    percentage = models.FloatField()  # النسبة المئوية للإجابات الصحيحة
+    feedback = models.TextField(null=True, blank=True)  # التغذية الراجعة المولدة من الذكاء الاصطناعي
+    completed_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.score}/{self.total_questions} ({self.percentage:.1f}%)"
