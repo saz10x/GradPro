@@ -1,0 +1,299 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Training Feedback | CyberSecurity Training Platform{% endblock %}
+
+{% block content %}
+<section class="feedback-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="feedback-container p-4">
+                    <h1 class="feedback-title text-center mb-4">Feedback</h1>
+                    
+                    <div class="scenario-overview p-4 mb-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="scenario-info">
+                                    <h3>{{ scenario.attack_type.name }}</h3>
+                                    <div class="scenario-image">
+                                        <div class="cyber-icon-wrapper">
+                                            {% if scenario.attack_type.name == 'Ransomware' %}
+                                            <i class="bi bi-file-lock2-fill"></i>
+                                            {% elif scenario.attack_type.name == 'DDoS' %}
+                                            <i class="bi bi-hdd-network-fill"></i>
+                                            {% elif scenario.attack_type.name == 'MitM' %}
+                                            <i class="bi bi-shield-x"></i>
+                                            {% else %}
+                                            <i class="bi bi-shield-fill-exclamation"></i>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="score-container">
+                                    <div class="score-circle">
+                                        <div class="score-number">{{ score|floatformat:0 }}%</div>
+                                    </div>
+                                    <div class="score-details">
+                                        <p>Correct Answers: <span>{{ correct_answers }} / {{ total_questions }}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-feedback p-4 mb-4">
+                        <h2 class="ai-feedback-title">AI-Generated Feedback</h2>
+                        <div class="feedback-content">
+                            <p class="feedback-intro">Congratulations! Here's your personalized feedback based on your performance:</p>
+                            
+                            <div class="feedback-points">
+                                <!-- نموذج لملاحظات يتم إنشاؤها من الذكاء الاصطناعي -->
+                                {% if score >= 80 %}
+                                <div class="feedback-point">
+                                    <span class="point-number">1</span>
+                                    <p><strong>Excellent Understanding:</strong> You demonstrated a strong understanding of how to respond effectively to a {{ scenario.attack_type.name }} incident.</p>
+                                </div>
+                                <div class="feedback-point">
+                                    <span class="point-number">2</span>
+                                    <p><strong>Quick Response:</strong> You recognized the importance of disconnecting affected systems and isolating the threat promptly.</p>
+                                </div>
+                                <div class="feedback-point">
+                                    <span class="point-number">3</span>
+                                    <p><strong>Prevention Knowledge:</strong> You understand that regular software updates and employee training are crucial in preventing future incidents.</p>
+                                </div>
+                                {% elif score >= 50 %}
+                                <div class="feedback-point">
+                                    <span class="point-number">1</span>
+                                    <p><strong>Good Foundation:</strong> You have a solid foundation in {{ scenario.attack_type.name }} response protocols, but there's room for improvement.</p>
+                                </div>
+                                <div class="feedback-point">
+                                    <span class="point-number">2</span>
+                                    <p><strong>Areas for Improvement:</strong> Consider focusing on the initial response steps and communication protocols during an incident.</p>
+                                </div>
+                                <div class="feedback-point">
+                                    <span class="point-number">3</span>
+                                    <p><strong>Preventive Measures:</strong> Review the best practices for preventing {{ scenario.attack_type.name }} attacks, particularly regarding system backups and user training.</p>
+                                </div>
+                                {% else %}
+                                <div class="feedback-point">
+                                    <span class="point-number">1</span>
+                                    <p><strong>Learning Opportunity:</strong> This scenario presented several challenging aspects of {{ scenario.attack_type.name }} incidents that you can now learn from.</p>
+                                </div>
+                                <div class="feedback-point">
+                                    <span class="point-number">2</span>
+                                    <p><strong>Key Focus Areas:</strong> Review the immediate response actions needed during a {{ scenario.attack_type.name }} attack, including isolation protocols and stakeholder communication.</p>
+                                </div>
+                                <div class="feedback-point">
+                                    <span class="point-number">3</span>
+                                    <p><strong>Suggested Resources:</strong> We recommend revisiting the learning materials on {{ scenario.attack_type.name }} prevention and response strategies.</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="next-steps">
+                                <p>Your training session will contribute to a more secure cybersecurity posture in your organization. Continue to stay informed about best practices in cybersecurity.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons text-center">
+                        <a href="{% url 'select_attack' %}" class="btn btn-primary me-3">
+                            <i class="bi bi-arrow-repeat"></i> Try Another Scenario
+                        </a>
+                        <a href="{% url 'learn' %}" class="btn btn-outline-light">
+                            <i class="bi bi-book"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .feedback-section {
+        min-height: calc(100vh - 300px);
+    }
+    
+    .feedback-container {
+        background-color: rgba(20, 20, 20, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feedback-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(to right, #8e44ad, #3498db);
+    }
+    
+    .feedback-title {
+        color: #8e44ad;
+        font-weight: 700;
+        font-size: 2.5rem;
+        text-shadow: 0 0 20px rgba(142, 68, 173, 0.5);
+    }
+    
+    .scenario-overview, .ai-feedback {
+        background-color: rgba(30, 30, 30, 0.6);
+        border-radius: 8px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+    }
+    
+    .cyber-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: rgba(142, 68, 173, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+    }
+    
+    .cyber-icon-wrapper i {
+        font-size: 3rem;
+        color: #8e44ad;
+    }
+    
+    .score-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: conic-gradient(#8e44ad calc(var(--score) * 1%), #2c3e50 0);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .score-circle::before {
+        content: '';
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #1e1e1e;
+    }
+    
+    .score-number {
+        position: relative;
+        z-index: 1;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .score-details {
+        text-align: center;
+        color: #ddd;
+    }
+    
+    .score-details span {
+        color: #8e44ad;
+        font-weight: 500;
+    }
+    
+    .ai-feedback-title {
+        color: #8e44ad;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(142, 68, 173, 0.2);
+    }
+    
+    .feedback-intro {
+        font-size: 1.1rem;
+        color: #ddd;
+        margin-bottom: 1.5rem;
+    }
+    
+    .feedback-points {
+        margin-bottom: 2rem;
+    }
+    
+    .feedback-point {
+        display: flex;
+        margin-bottom: 1.5rem;
+    }
+    
+    .point-number {
+        width: 30px;
+        height: 30px;
+        background-color: #8e44ad;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-weight: 600;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .feedback-point p {
+        margin: 0;
+        color: #ddd;
+    }
+    
+    .feedback-point strong {
+        color: #fff;
+    }
+    
+    .next-steps {
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(142, 68, 173, 0.2);
+        color: #ddd;
+    }
+    
+    .action-buttons {
+        margin-top: 2rem;
+    }
+    
+    .btn-primary {
+        background-color: #8e44ad;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background-color: #6c3483;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+    }
+    
+    .btn-outline-light:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // تعيين قيمة النسبة المئوية في دائرة الدرجة
+        const scoreCircle = document.querySelector('.score-circle');
+        const jsScore = {{ score|floatformat:0 }};
+        scoreCircle.style.setProperty('--score', jsScore);
+    scoreCircle.style.setProperty('--score', score);
+</script>
+{% endblock %}

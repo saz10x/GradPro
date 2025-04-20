@@ -33,7 +33,8 @@ class ScenarioDetailsBase(models.Model):
 
 class RansomwareScenario(ScenarioDetailsBase):
     initial_infection_vector = models.CharField(max_length=200)
-    ransom_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    ransom_amount_text = models.CharField(max_length=200, default='')  # قيمة نصية للفدية
+    ransom_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # القيمة الرقمية
     deadline = models.DateTimeField()
     
     def __str__(self):

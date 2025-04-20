@@ -48,9 +48,9 @@ def generate_scenario(attack_type):
     3. Only one correct answer per question
     4. Progressive difficulty level from basic to advanced
     5. Cover various aspects of the attack: detection, prevention, response, mitigation
-    6. Include an explanation of why the chosen answer is correct
     
-    Please respond with the scenario first, followed by all 15 questions with their options and correct answers.
+    
+    Please respond with the scenario first, followed by all 15 questions with their options
     """
     
     try:
