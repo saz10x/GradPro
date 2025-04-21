@@ -159,6 +159,29 @@ def scenario_view(request, attack_type):
     }
     
     return render(request, 'training/scenario.html', context)
+def get_random_existing_scenario(attack_type):
+    """
+    استرجاع سيناريو عشوائي من نفس النوع من قاعدة البيانات
+    """
+    try:
+        attack_type_obj = AttackType.objects.get(name__iexact=attack_type.lower())
+        # البحث عن سيناريوهات من نفس النوع
+        existing_scenarios = Scenario.objects.filter(
+            attack_type=attack_type_obj,
+            # التأكد من أن السيناريو ليس فارغًا وليس سيناريو افتراضي للاختبار
+            scenario_text__isnull=False,
+        ).exclude(
+            scenario_text__icontains="sample scenario for testing"
+        )
+        
+        if existing_scenarios.exists():
+            # اختيار سيناريو عشوائي
+            import random
+            return random.choice(existing_scenarios)
+    except Exception as e:
+        print(f"Error retrieving random scenario: {str(e)}")
+    
+    return None
 @login_required
 def scenario(request, scenario_id):
     """عرض سيناريو محدد بناءً على معرفه"""
