@@ -36,9 +36,7 @@ def scenario_view(request, attack_type):
         messages.error(request, 'Invalid attack type')
         return redirect('training:select_attack')
     
-    # حذف السيناريوهات القديمة لهذا النوع (اختياري - للتجربة فقط)
-    # Scenario.objects.filter(attack_type=attack_type_obj).delete()
-    
+
     # إنشاء سيناريو جديد مباشرة
     ai_response = generate_scenario(attack_type.lower())
     
