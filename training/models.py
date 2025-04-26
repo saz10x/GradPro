@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from pages.models import AttackType
 
+
 class Scenario(models.Model):
     scenario_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='scenarios')
@@ -9,18 +10,22 @@ class Scenario(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     scenario_text = models.TextField()
     
-    # حقل لتخزين استجابة الذكاء الاصطناعي الكاملة
-    ai_response = models.JSONField(null=True, blank=True)
+    # حقل جديد لتخزين البيانات بصيغة JSON
+    json_data = models.JSONField(null=True, blank=True)
     
-    # حقل لتخزين الاستجابة الخام غير المعالجة
+ 
+    ai_response = models.JSONField(null=True, blank=True)
     raw_response = models.TextField(null=True, blank=True)
     
     def __str__(self):
         return f"Scenario {self.scenario_id}"
     
     def get_questions(self):
-        """استخراج الأسئلة من استجابة الذكاء الاصطناعي إذا كانت متوفرة"""
-        if self.ai_response and 'questions' in self.ai_response:
+        """استخراج الأسئلة من البيانات المخزنة بصيغة JSON"""
+        if self.json_data and 'questions' in self.json_data:
+            return self.json_data['questions']
+        # استرجاع بالطريقة القديمة كخطة بديلة
+        elif self.ai_response and 'questions' in self.ai_response:
             return self.ai_response['questions']
         return []
 
@@ -99,3 +104,16 @@ class UserScenarioResult(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.score}/{self.total_questions} ({self.percentage:.1f}%)"
+    
+    # store the scenario in database
+class StoredScenario(models.Model):
+    id = models.AutoField(primary_key=True)
+    attack_type = models.ForeignKey(AttackType, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # تخزين كل البيانات بصيغة JSON
+    json_data = models.JSONField()
+    
+    def __str__(self):
+        return f"{self.attack_type.name} - {self.title}"

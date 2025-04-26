@@ -4,6 +4,7 @@ import re
 import google.generativeai as genai
 from django.conf import settings
 
+
 # تهيئة API
 def init_genai():
     genai.configure(api_key=settings.GEMINI_API_KEY)
@@ -17,7 +18,7 @@ def generate_scenario(attack_type):
 
     # تحديد نموذج Gemini
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
     except Exception as e:
         print(f"Error initializing Gemini model: {str(e)}")
         return create_default_scenario(attack_type)
@@ -66,6 +67,7 @@ def generate_scenario(attack_type):
     D. Malicious advertisement
     
     Please respond with the scenario first, followed by all 15 questions with their options
+    
     """
 
     try:

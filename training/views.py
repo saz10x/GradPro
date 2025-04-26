@@ -6,6 +6,8 @@ from django.utils import timezone
 from .models import Scenario, Question, Answer, Response, UserScenarioResult
 from pages.models import AttackType
 from .ai_utils import generate_scenario
+from .models import StoredScenario
+
 
 def training_home(request):
     if not request.user.is_authenticated:
@@ -36,104 +38,60 @@ def scenario_view(request, attack_type):
         messages.error(request, 'Invalid attack type')
         return redirect('training:select_attack')
     
-
-    # إنشاء سيناريو جديد مباشرة
-    ai_response = generate_scenario(attack_type.lower())
+    # البحث عن سيناريو مخزن في قاعدة البيانات
+    stored_scenarios = StoredScenario.objects.filter(attack_type=attack_type_obj)
     
-    if not ai_response:
-        # إذا فشل إنشاء سيناريو بالذكاء الاصطناعي، قم بإنشاء سيناريو بسيط للاختبار
-        scenario_text = f"This is a sample {attack_type} scenario for testing."
-        ai_response = {
+    if stored_scenarios.exists():
+        # اختيار سيناريو عشوائي من القاعدة
+        import random
+        stored_scenario = random.choice(stored_scenarios)
+        json_data = stored_scenario.json_data
+        
+        # استخراج نص السيناريو من البيانات المخزنة
+        scenario_text = json_data.get('scenario', {}).get('scenarioText', '')
+    else:
+        # إذا لم توجد سيناريوهات مخزنة، استخدم الطريقة القديمة
+        ai_response = generate_scenario(attack_type.lower())
+        
+        if not ai_response:
+            # إذا فشل إنشاء سيناريو بالذكاء الاصطناعي، قم بإنشاء سيناريو بسيط للاختبار
+            scenario_text = "Sample scenario for testing purposes."
+            ai_response = {
+                'scenario': {
+                    'scenarioText': scenario_text,
+                    'specificDetails': {}
+                },
+                'questions': []
+            }
+        
+        # إعداد البيانات بصيغة JSON
+        scenario_text = ai_response.get('scenario', {}).get('scenarioText', '')
+        json_data = {
             'scenario': {
                 'scenarioText': scenario_text,
-                'specificDetails': {
-                    'initialInfectionVector': 'Email attachment',
-                    'ransomAmount': '5000',
-                    'deadline': '2023-01-01 00:00:00',
-                    'typeVector': 'WiFi spoofing',
-                    'dataIntercepted': 'User credentials',
-                    'typeOfDDoS': 'SYN flood',
-                    'attackVector': 'Botnet',
-                    'targetedService': 'Web server',
-                    'duration': '2 hours'
-                }
+                'specificDetails': ai_response.get('scenario', {}).get('specificDetails', {})
             },
-            'questions': [
-                {
-                    'questionText': f'What is the most common initial vector for a {attack_type} attack?',
-                    'options': [
-                        'Email attachment',
-                        'USB drive',
-                        'Remote desktop',
-                        'Public WiFi'
-                    ],
-                    'correctAnswerIndex': 0,
-                    'explanation': 'Email attachments are commonly used as initial infection vectors.'
-                },
-                {
-                    'questionText': f'Which is the best defense against {attack_type} attacks?',
-                    'options': [
-                        'Firewalls only',
-                        'Regular backups and security awareness',
-                        'Antivirus only',
-                        'Disable all external connections'
-                    ],
-                    'correctAnswerIndex': 1,
-                    'explanation': 'A multi-layered approach with backups and awareness is most effective.'
-                }
-            ]
+            'questions': ai_response.get('questions', [])
         }
     
-    # إنشاء سيناريو جديد
+    # إنشاء سيناريو جديد للمستخدم
     with transaction.atomic():
-        # إنشاء السيناريو الأساسي
-        scenario_text = ai_response.get('scenario', {}).get('scenarioText', '')
         new_scenario = Scenario.objects.create(
             user=request.user,
             attack_type=attack_type_obj,
             scenario_text=scenario_text,
-            ai_response=ai_response,
-            raw_response=str(ai_response)
+            json_data=json_data  # تخزين البيانات بصيغة JSON
         )
         
         # إنشاء التفاصيل الخاصة بنوع الهجوم
-        specific_details = ai_response.get('scenario', {}).get('specificDetails', {})
+        specific_details = json_data.get('scenario', {}).get('specificDetails', {})
         
         if attack_type.lower() == 'ransomware':
-            from .models import RansomwareScenario
+            # Add logic for ransomware-specific details here
+            pass
             
-            # تحويل قيمة الفدية إلى قيمة عددية
-            try:
-                ransom_amount = float(specific_details.get('ransomAmount', '0').replace('$', '').replace(',', ''))
-            except (ValueError, TypeError):
-                ransom_amount = 5000.0  # قيمة افتراضية
-                
-            RansomwareScenario.objects.create(
-                scenario=new_scenario,
-                initial_infection_vector=specific_details.get('initialInfectionVector', ''),
-                ransom_amount=ransom_amount,
-                ransom_amount_text=specific_details.get('ransomAmount', ''),
-                deadline=specific_details.get('deadline', None) or "2023-01-01 00:00:00"
-            )
-        elif attack_type.lower() == 'mitm':
-            from .models import MitMScenario
-            MitMScenario.objects.create(
-                scenario=new_scenario,
-                type_vector=specific_details.get('typeVector', ''),
-                data_intercepted=specific_details.get('dataIntercepted', '')
-            )
-        elif attack_type.lower() == 'ddos':
-            from .models import DDoSScenario
-            DDoSScenario.objects.create(
-                scenario=new_scenario,
-                type_of_ddos=specific_details.get('typeOfDDoS', ''),
-                attack_vector=specific_details.get('attackVector', ''),
-                targeted_service=specific_details.get('targetedService', ''),
-                duration=specific_details.get('duration', '')
-            )
-        
-        # إنشاء الأسئلة والإجابات
-        for q_data in ai_response.get('questions', []):
+        # إنشاء الأسئلة والإجابات من البيانات المخزنة في JSON
+        for q_data in json_data.get('questions', []):
             question = Question.objects.create(
                 scenario=new_scenario,
                 question_text=q_data.get('questionText', ''),
