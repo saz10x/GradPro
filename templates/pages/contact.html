@@ -1,0 +1,516 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us | CyberSecurity Training Platform{% endblock %}
+
+{% block content %}
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-10 text-center">
+                <h1 class="hero-title mb-4">Contact Us</h1>
+                <p class="hero-subtitle mb-5">We welcome your questions, suggestions, or any feedback you might have. Our team is here to help!</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="contact-info-box p-4 mb-4 mb-lg-0">
+                    <h2 class="feature-title mb-4">Contact Information</h2>
+                    
+                    <div class="contact-item mb-4">
+                        <div class="contact-icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Our Location</h3>
+                            <p>Oman, Dhahirah Governorate, Ibri & Dank</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-4">
+                        <div class="contact-icon">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Email</h3>
+                            <p><a href="mailto:info@cybersecurity-training.com">2020593197@utas.edu.om</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-4">
+                        <div class="contact-icon">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Phone</h3>
+                            <p>+968 97055069 </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item mb-4">
+                        <div class="contact-icon">
+                            <i class="bi bi-clock-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Working Hours</h3>
+                            <p>Sunday - Thursday: 9:00 AM - 1:00 PM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links mt-5">
+                        <h3>Follow Us</h3>
+                        <div class="d-flex mt-3">
+                            <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-github"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="animated-terminal mt-5">
+                        <div class="terminal-header">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        <div class="terminal-content">
+                            <div class="typing-text">$ Our Goal is to Make You Aware </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="contact-form-box p-4">
+                    <h2 class="feature-title mb-4">Send Your Message</h2>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" action="{% url 'contact' %}">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                        {{ form.name }}
+                                    </div>
+                                    {% if form.name.errors %}
+                                        <div class="text-danger">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                        {{ form.email }}
+                                    </div>
+                                    {% if form.email.errors %}
+                                        <div class="text-danger">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="{{ form.contact_type.id_for_label }}" class="form-label">Message Type</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+                                        {{ form.contact_type }}
+                                    </div>
+                                    {% if form.contact_type.errors %}
+                                        <div class="text-danger">{{ form.contact_type.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="{{ form.subject.id_for_label }}" class="form-label">Subject</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-chat-left-text-fill"></i></span>
+                                        {{ form.subject }}
+                                    </div>
+                                    {% if form.subject.errors %}
+                                        <div class="text-danger">{{ form.subject.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="{{ form.message.id_for_label }}" class="form-label">Message</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-chat-right-text-fill"></i></span>
+                                    {{ form.message }}
+                                </div>
+                                {% if form.message.errors %}
+                                    <div class="text-danger">{{ form.message.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="{{ form.attack_types.id_for_label }}" class="form-label">{{ form.attack_types.label }}</label>
+                                <div class="attack-types-container">
+                                    {{ form.attack_types }}
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-submit w-100">
+                            <i class="bi bi-send-fill me-2"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .contact-section {
+        min-height: calc(100vh - 300px);
+    }
+    
+    .contact-info-box, .contact-form-box {
+        background-color: rgba(20, 20, 20, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .contact-info-box::before, .contact-form-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(to right, #8e44ad, #3498db);
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-icon {
+        width: 45px;
+        height: 45px;
+        background-color: rgba(142, 68, 173, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .contact-item:hover .contact-icon {
+        transform: scale(1.1);
+        background-color: rgba(142, 68, 173, 0.3);
+    }
+    
+    .contact-icon i {
+        color: #8e44ad;
+        font-size: 1.3rem;
+    }
+    
+    .contact-text h3 {
+        color: #fff;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .contact-text p {
+        color: #ccc;
+        margin: 0;
+    }
+    
+    .contact-text a {
+        color: #8e44ad;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .contact-text a:hover {
+        color: #3498db;
+        text-decoration: underline;
+    }
+    
+    .social-links h3 {
+        color: #fff;
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .social-link {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(142, 68, 173, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8e44ad;
+        margin-right: 1rem;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .social-link:hover {
+        background-color: #8e44ad;
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(142, 68, 173, 0.5);
+    }
+    
+    .animated-terminal {
+        background-color: #0a0a0a;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+    
+    .terminal-header {
+        background-color: #333;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+    
+    .dot:nth-child(1) {
+        background-color: #ff5f57;
+    }
+    
+    .dot:nth-child(2) {
+        background-color: #ffbd2e;
+    }
+    
+    .dot:nth-child(3) {
+        background-color: #28ca41;
+    }
+    
+    .terminal-content {
+        padding: 15px;
+        color: #00ff00;
+        font-family: monospace;
+        min-height: 60px;
+    }
+    
+    .typing-text {
+        border-right: 2px solid #00ff00;
+        white-space: nowrap;
+        overflow: hidden;
+        animation: typing 3s steps(30) infinite;
+    }
+    
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+    
+    .form-label {
+        color: #ddd;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .input-group-text {
+        background-color: #8e44ad;
+        color: white;
+        border: none;
+    }
+    
+    .form-control, .form-select {
+        background-color: #222;
+        border: 1px solid #444;
+        color: white;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        background-color: #222;
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+        color: white;
+    }
+    
+    .form-select option {
+        background-color: #222;
+        color: white;
+    }
+    
+    .btn-submit {
+        background-color: #8e44ad;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-submit:hover {
+        background-color: #6c3483;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+    }
+    
+    /* New improved checkbox styling */
+    .attack-types-container {
+        background-color: rgba(30, 30, 30, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 15px;
+    }
+    
+    /* Custom checkbox styling */
+    ul.attack-types-checkbox {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+        list-style: none;
+        padding: 10px;
+        margin: 0;
+    }
+    
+    ul.attack-types-checkbox li {
+        margin-bottom: 8px;
+        position: relative;
+    }
+    
+    ul.attack-types-checkbox input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    ul.attack-types-checkbox label {
+        display: block;
+        position: relative;
+        padding: 10px 10px 10px 40px;
+        cursor: pointer;
+        color: #ddd;
+        background-color: rgba(30, 30, 50, 0.6);
+        border: 1px solid rgba(142, 68, 173, 0.2);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        user-select: none;
+    }
+    
+    ul.attack-types-checkbox label:hover {
+        background-color: rgba(142, 68, 173, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    ul.attack-types-checkbox label:before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #8e44ad;
+        background-color: #222;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+    
+    ul.attack-types-checkbox input[type="checkbox"]:checked + label {
+        background-color: rgba(142, 68, 173, 0.2);
+        border-color: rgba(142, 68, 173, 0.6);
+    }
+    
+    ul.attack-types-checkbox input[type="checkbox"]:checked + label:before {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+    }
+    
+    ul.attack-types-checkbox input[type="checkbox"]:checked + label:after {
+        content: '';
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-60%) rotate(45deg);
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+    }
+    
+    /* Custom scrollbar */
+    .attack-types-container::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .attack-types-container::-webkit-scrollbar-track {
+        background: #222;
+        border-radius: 10px;
+    }
+    
+    .attack-types-container::-webkit-scrollbar-thumb {
+        background: #8e44ad;
+        border-radius: 10px;
+    }
+    
+    .attack-types-container::-webkit-scrollbar-thumb:hover {
+        background: #6c3483;
+    }
+</style>
+
+<script>
+    // Add animation effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Apply hover and focus effects to checkboxes
+        const checkboxLabels = document.querySelectorAll('.attack-types-checkbox label');
+        
+        checkboxLabels.forEach(label => {
+            label.addEventListener('mouseenter', () => {
+                label.style.transform = 'translateY(-2px)';
+                label.style.boxShadow = '0 5px 15px rgba(142, 68, 173, 0.2)';
+            });
+            
+            label.addEventListener('mouseleave', () => {
+                label.style.transform = 'translateY(0)';
+                label.style.boxShadow = 'none';
+            });
+        });
+    });
+</script>
+{% endblock %}

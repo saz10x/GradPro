@@ -1,4 +1,3 @@
-from email.utils import parsedate
 import os
 import json
 import re
@@ -59,18 +58,16 @@ def generate_scenario(attack_type):
     5. Cover various aspects of the attack: detection, prevention, response, mitigation
     6. Must include 15 questions and the choices must follow the format A. B. C. D.
     7. Number questions from 1 to 15
-    8.insert tick mark (✓) next to the correct answer
-    9.randomize the location of correct answer
 
     Example question format:
     What was the attack vector used in this scenario?
-    A. Phishing email (✓)
+    A. Phishing email (correct)
     B. USB drive
     C. Compromised website
     D. Malicious advertisement
     
     Please respond with the scenario first, followed by all 15 questions with their options
-    
+    NOTE : Generate the output as JSON format
     """
 
     try:
@@ -85,12 +82,9 @@ def generate_scenario(attack_type):
             print("Empty or very short response from Gemini API")
             return create_default_scenario(attack_type)
         
-        print("Response from Gemini API: ", text_response)
         # تحويل النص إلى تنسيق منظم
         scenario_data = parse_ai_response(text_response, attack_type)
-        print("....")
-        print(scenario_data)
-
+        
         # التحقق من جودة السيناريو
         if not scenario_data or len(scenario_data.get('scenario', {}).get('scenarioText', '').strip()) < 100:
             print("Generated scenario too short or empty")
@@ -101,138 +95,6 @@ def generate_scenario(attack_type):
     except Exception as e:
         print(f"Error calling Gemini API: {str(e)}")
         return create_default_scenario(attack_type)
-def parse_ai_response_json(json_response, attack_type):
-    """
-    Parse JSON response from AI to extract scenario details, questions and answers.
-    
-    Args:
-        json_response (dict): JSON response from AI containing scenario and questions
-        attack_type (str): Type of attack ('ransomware', 'mitm', or 'ddos')
-    
-    Returns:
-        dict: Dictionary containing structured scenario data and questions
-    """
-    # Initialize dictionary to store parsed data
-    parsed_data = {
-        'scenario': {
-            'scenarioText': '',
-            'attackType': attack_type,
-            'specificDetails': {}
-        },
-        'questions': []
-    }
-    
-    # Extract scenario text
-    if 'scenario' in json_response:
-        # If scenario is a string, use it directly
-        if isinstance(json_response['scenario'], str):
-            parsed_data['scenario']['scenarioText'] = json_response['scenario']
-        # If scenario is a dictionary with 'scenarioText' key
-        elif isinstance(json_response['scenario'], dict) and 'scenarioText' in json_response['scenario']:
-            parsed_data['scenario']['scenarioText'] = json_response['scenario']['scenarioText']
-    
-    # Extract scenario specific details based on attack type
-    if attack_type.lower() == 'ransomware':
-        # Extract ransomware specific details from scenario text
-        scenario_text = parsed_data['scenario']['scenarioText']
-        specific_details = {}
-        
-        # Try to find initial infection vector
-        if "InitialInfectionVector" in scenario_text:
-            # Simple extraction - you might need more sophisticated parsing
-            infection_vector = extract_detail(scenario_text, "InitialInfectionVector")
-            specific_details['initialInfectionVector'] = infection_vector
-        
-        # Try to find ransom amount
-        if "RansomAmount" in scenario_text:
-            ransom_amount = extract_detail(scenario_text, "RansomAmount")
-            specific_details['ransomAmount'] = ransom_amount
-        
-        # Try to find deadline
-        if "Deadline" in scenario_text:
-            deadline = extract_detail(scenario_text, "Deadline")
-            specific_details['deadline'] = deadline
-        
-        parsed_data['scenario']['specificDetails'] = specific_details
-    
-    elif attack_type.lower() == 'mitm':
-        # Extract Man-in-the-Middle specific details
-        scenario_text = parsed_data['scenario']['scenarioText']
-        specific_details = {}
-        
-        # Try to find type vector
-        if "TypeVector" in scenario_text:
-            type_vector = extract_detail(scenario_text, "TypeVector")
-            specific_details['typeVector'] = type_vector
-        
-        # Try to find data intercepted
-        if "DataIntercepted" in scenario_text:
-            data_intercepted = extract_detail(scenario_text, "DataIntercepted")
-            specific_details['dataIntercepted'] = data_intercepted
-        
-        parsed_data['scenario']['specificDetails'] = specific_details
-    
-    elif attack_type.lower() == 'ddos':
-        # Extract DDoS specific details
-        scenario_text = parsed_data['scenario']['scenarioText']
-        specific_details = {}
-        
-        # Try to find type of DDoS
-        if "TypeOfDDoS" in scenario_text:
-            ddos_type = extract_detail(scenario_text, "TypeOfDDoS")
-            specific_details['typeOfDDoS'] = ddos_type
-        
-        # Try to find attack vector
-        if "AttackVector" in scenario_text:
-            attack_vector = extract_detail(scenario_text, "AttackVector")
-            specific_details['attackVector'] = attack_vector
-        
-        # Try to find targeted service
-        if "TargetedService" in scenario_text:
-            targeted_service = extract_detail(scenario_text, "TargetedService")
-            specific_details['targetedService'] = targeted_service
-        
-        # Try to find duration
-        if "Duration" in scenario_text:
-            duration = extract_detail(scenario_text, "Duration")
-            specific_details['duration'] = duration
-        
-        parsed_data['scenario']['specificDetails'] = specific_details
-    
-    # Extract questions
-    if 'questions' in json_response and isinstance(json_response['questions'], list):
-        for q_data in json_response['questions']:
-            question = {}
-            
-            # Handle different JSON formats
-            if isinstance(q_data, dict):
-                # Format 1: {id: 1, question: "text", options: {A: "opt1", B: "opt2"}, answer: "A"}
-                if 'question' in q_data and 'options' in q_data and 'answer' in q_data:
-                    question['questionText'] = q_data['question']
-                    
-                    # Convert options from {A: "text", B: "text"} to list ["text", "text"]
-                    options = []
-                    correct_answer_index = None
-                    
-                    # Handle options as dictionary with letter keys
-                    if isinstance(q_data['options'], dict):
-                        for i, (key, value) in enumerate(q_data['options'].items()):
-                            options.append(value)
-                            if key == q_data['answer']:
-                                correct_answer_index = i
-                    
-                    question['options'] = options
-                    question['correctAnswerIndex'] = correct_answer_index
-                    question['explanation'] = q_data.get('explanation', '')
-                
-                # Format 2: {questionText: "text", options: ["opt1", "opt2"], correctAnswerIndex: 0}
-                elif 'questionText' in q_data and 'options' in q_data and 'correctAnswerIndex' in q_data:
-                    question = q_data
-            
-            if question:
-                parsed_data['questions'].append(question)
-    
-    return parsed_data
 
 def parse_ai_response(text_response, attack_type):
     """
@@ -403,63 +265,18 @@ def parse_ai_response(text_response, attack_type):
 
 def extract_detail(text, keyword):
     """
-    Helper function to extract specific details from scenario text.
-    
-    Args:
-        text (str): The scenario text
-        keyword (str): The keyword to search for
-    
-    Returns:
-        str: Extracted information or default value
+    استخراج تفاصيل محددة من النص
     """
-    lines = text.split('\n')
+    # هذه دالة بسيطة لاستخراج معلومات من النص - يمكن تحسينها
     keyword = keyword.lower()
+    lines = text.lower().split("\n")
     
-    # Try to find the keyword in the text
     for i, line in enumerate(lines):
-        if keyword.lower() in line.lower():
-            # If found, try to extract the information from the same line or next line
-            # This is a simple extraction method and might need refinement
-            current_line = line.lower()
-            
-            # Try to extract information after the keyword in the same line
-            if ":" in current_line:
-                parts = line.split(":", 1)
-                if len(parts) > 1 and parts[1].strip():
-                    return parts[1].strip()
-            
-            # If not found in the same line, check the next line
-            if i + 1 < len(lines) and lines[i + 1].strip():
-                return lines[i + 1].strip()
-            
-            # If we found the keyword but couldn't extract a value, return the line itself
-            return line.strip()
+        if keyword in line:
+            # محاولة استخراج المعلومات من هذا السطر أو السطر التالي
+            return lines[i + 1] if i + 1 < len(lines) else line
     
-    # If the keyword wasn't found, check for similar patterns
-    for line in lines:
-        if keyword.replace("_", " ").lower() in line.lower():
-            # Return what seems to be the value
-            parts = line.split(":", 1) if ":" in line else line.split("was", 1)
-            if len(parts) > 1:
-                return parts[1].strip()
-    
-    # If we couldn't find anything, return a default value
     return "Not specified"
-
-# def extract_detail(text, keyword):
-#     """
-#     استخراج تفاصيل محددة من النص
-#     """
-#     # هذه دالة بسيطة لاستخراج معلومات من النص - يمكن تحسينها
-#     keyword = keyword.lower()
-#     lines = text.lower().split("\n")
-    
-#     for i, line in enumerate(lines):
-#         if keyword in line:
-#             # محاولة استخراج المعلومات من هذا السطر أو السطر التالي
-#             return lines[i + 1] if i + 1 < len(lines) else line
-    
-#     return "Not specified"
 
 def create_default_scenario(attack_type):
     """

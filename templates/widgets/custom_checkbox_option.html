@@ -1,0 +1,4 @@
+<li>
+    <input type="{{ widget.type }}" name="{{ widget.name }}" id="{{ widget.attrs.id }}_{{ widget.index }}" value="{{ widget.value }}"{% if widget.value in widget.attrs.value %} checked{% endif %}>
+    <label for="{{ widget.attrs.id }}_{{ widget.index }}">{{ widget.label }}</label>
+</li>

@@ -292,8 +292,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         // تعيين قيمة النسبة المئوية في دائرة الدرجة
         const scoreCircle = document.querySelector('.score-circle');
-        const jsScore = {{ score|floatformat:0 }};
+        const jsScore = "{{ score|floatformat:0 }}";
         scoreCircle.style.setProperty('--score', jsScore);
     scoreCircle.style.setProperty('--score', score);
+    });
 </script>
 {% endblock %}

@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from .models import AttackType
@@ -18,12 +19,12 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Your message has been sent successfully!')
             return redirect('contact')
     else:
         form = ContactForm()
     
     return render(request, 'pages/contact.html', {'form': form})
-
 def logout_view(request):
     logout(request)
     return redirect('home')
