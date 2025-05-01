@@ -59,12 +59,12 @@ def generate_scenario(attack_type):
     5. Cover various aspects of the attack: detection, prevention, response, mitigation
     6. Must include 15 questions and the choices must follow the format A. B. C. D.
     7. Number questions from 1 to 15
-    8.insert tick mark (✓) next to the correct answer
-    9.randomize the location of correct answer
+    8.insert tick mark (✓) next to the correct answer (don't show the tick mark in the answer options)
+    9.randomize the location of correct answer in options - note that don't use same letter as correct answer in all questions 
 
     Example question format:
     What was the attack vector used in this scenario?
-    A. Phishing email (✓)
+    A. Phishing email 
     B. USB drive
     C. Compromised website
     D. Malicious advertisement
@@ -139,7 +139,7 @@ def parse_ai_response_json(json_response, attack_type):
         
         # Try to find initial infection vector
         if "InitialInfectionVector" in scenario_text:
-            # Simple extraction - you might need more sophisticated parsing
+            # Simple extraction 
             infection_vector = extract_detail(scenario_text, "InitialInfectionVector")
             specific_details['initialInfectionVector'] = infection_vector
         
