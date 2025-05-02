@@ -1,14 +1,12 @@
+# training/admin.py
 from django.contrib import admin
-from .models import StoredScenario
 from .models import (
     Scenario, 
-    RansomwareScenario, 
-    MitMScenario, 
-    DDoSScenario, 
     Question, 
     Answer, 
     Response,
     StoredScenario,
+    UserScenarioResult
 )
 
 # تسجيل النماذج الأساسية
@@ -16,14 +14,9 @@ admin.site.register(Scenario)
 admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(Response)
+admin.site.register(UserScenarioResult)
 
-# تسجيل نماذج السيناريوهات المتخصصة
-admin.site.register(RansomwareScenario)
-admin.site.register(MitMScenario)
-admin.site.register(DDoSScenario)
-
-
-
+# تخصيص عرض StoredScenario في لوحة الإدارة
 class StoredScenarioAdmin(admin.ModelAdmin):
     list_display = ['title', 'attack_type', 'created_at']
     list_filter = ['attack_type']

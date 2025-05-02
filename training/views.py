@@ -1,97 +1,150 @@
+# training/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
 from django.utils import timezone
-from .models import Scenario, Question, Answer, Response, UserScenarioResult
+from django.http import HttpResponse
+import json
+import random
+from .models import Scenario, Question, Answer, Response, UserScenarioResult, StoredScenario
 from pages.models import AttackType
-from .ai_utils import generate_scenario
-from .models import StoredScenario
+from .ai_utils import generate_scenario, parse_ai_response_json
 
 
 def training_home(request):
     if not request.user.is_authenticated:
-        print("User not authenticated, redirecting to login")  # للتشخيص
-        return redirect('/users/login/')  # استخدم المسار المطلق للتحقق
+        return redirect('/users/login/')
     return render(request, 'training/training_home.html')
+
 
 def training_login(request):
     return render(request, 'training/login.html')
+
 
 @login_required
 def select_attack(request):
     """عرض صفحة اختيار نوع الهجوم"""
     return render(request, 'training/select_attack.html')
 
+
 @login_required
 def scenario_view(request, attack_type):
-    """عرض سيناريو تدريبي محدد بناءً على نوع الهجوم المختار"""
+    """
+    عرض سيناريو تدريبي محدد بناءً على نوع الهجوم المختار.
+    يحاول أولاً توليد سيناريو جديد بالذكاء الاصطناعي، وإذا فشل يستخدم سيناريو مخزن.
+    
+    Args:
+        request: كائن HttpRequest
+        attack_type: نوع الهجوم (ransomware, ddos, mitm)
+    
+    Returns:
+        HttpResponse: استجابة تتضمن صفحة السيناريو
+    """
     # التحقق من أن نوع الهجوم صالح
     valid_types = ['ransomware', 'ddos', 'mitm']
-    if attack_type not in valid_types:
+    if attack_type.lower() not in valid_types:
+        messages.error(request, 'Invalid attack type')
         return redirect('training:select_attack')
     
     # الحصول على نوع الهجوم من قاعدة البيانات
     try:
-        attack_type_obj = AttackType.objects.get(name=attack_type.lower())
+        attack_type_obj = AttackType.objects.get(name__iexact=attack_type.lower())
     except AttackType.DoesNotExist:
-        messages.error(request, 'Invalid attack type')
-        return redirect('training:select_attack')
+        # إنشاء نوع هجوم جديد إذا لم يكن موجودًا
+        attack_type_obj = AttackType.objects.create(
+            name=attack_type.lower(),
+            description=f"Description for {attack_type}",
+            icon=f"bi-shield-{attack_type.lower()}"
+        )
     
-    # البحث عن سيناريو مخزن في قاعدة البيانات
-    stored_scenarios = StoredScenario.objects.filter(attack_type=attack_type_obj)
-    
-    if stored_scenarios.exists():
-        # اختيار سيناريو عشوائي من القاعدة
-        import random
-        stored_scenario = random.choice(stored_scenarios)
-        json_data = stored_scenario.json_data
+    # خطوة 1: محاولة توليد سيناريو جديد باستخدام الذكاء الاصطناعي
+    try:
+        # توليد سيناريو جديد باستخدام الذكاء الاصطناعي
+        print(f"Attempting to generate a new AI scenario for {attack_type}")
+        json_data = generate_scenario(attack_type.lower())
         
-        # استخراج نص السيناريو من البيانات المخزنة
+        # التحقق من صحة البيانات المولدة
+        if not json_data or 'scenario' not in json_data or 'questions' not in json_data:
+            print("Invalid AI response format, trying stored scenarios")
+            raise Exception("Invalid AI response format")
+            
+        # استخراج نص السيناريو والتفاصيل المحددة
         scenario_text = json_data.get('scenario', {}).get('scenarioText', '')
-    else:
-        # إذا لم توجد سيناريوهات مخزنة، استخدم الطريقة القديمة
-        ai_response = generate_scenario(attack_type.lower())
         
-        if not ai_response:
-            # إذا فشل إنشاء سيناريو بالذكاء الاصطناعي، قم بإنشاء سيناريو بسيط للاختبار
-            scenario_text = "Sample scenario for testing purposes."
-            ai_response = {
+        # هنا نتحقق من أن السيناريو ليس السيناريو الافتراضي
+        if "TechVision Inc" in scenario_text and attack_type.lower() == 'ransomware':
+            print("Default ransomware scenario detected, trying to generate a new one")
+            raise Exception("Default scenario detected")
+            
+        if "GlobalStream" in scenario_text and attack_type.lower() == 'ddos':
+            print("Default DDoS scenario detected, trying to generate a new one")
+            raise Exception("Default scenario detected")
+            
+        if "FinSecure" in scenario_text and attack_type.lower() == 'mitm':
+            print("Default MitM scenario detected, trying to generate a new one")
+            raise Exception("Default scenario detected")
+            
+        # حفظ السيناريو المولد في قاعدة البيانات لاستخدامه لاحقاً
+        new_stored_scenario = StoredScenario.objects.create(
+            attack_type=attack_type_obj,
+            title=f"AI-Generated {attack_type.capitalize()} Scenario ({timezone.now().strftime('%Y-%m-%d %H:%M')})",
+            json_data=json_data
+        )
+        print(f"Successfully generated and stored new AI scenario with ID {new_stored_scenario.id}")
+        
+    except Exception as e:
+        # إذا فشل توليد السيناريو، استخدم سيناريو مخزن
+        print(f"Error generating scenario: {str(e)}")
+        
+        # خطوة 2: البحث عن سيناريو مخزن في قاعدة البيانات
+        stored_scenarios = StoredScenario.objects.filter(attack_type=attack_type_obj)
+        
+        if stored_scenarios.exists():
+            # اختيار سيناريو عشوائي من قاعدة البيانات
+            stored_scenario = random.choice(stored_scenarios)
+            json_data = stored_scenario.json_data
+            print(f"Using stored scenario: {stored_scenario.title}")
+        else:
+            # لا توجد سيناريوهات مخزنة، إنشاء سيناريو بسيط
+            print("No stored scenarios found, creating a simple scenario")
+            scenario_text = f"Could not generate scenario for {attack_type}. Please try again later."
+            json_data = {
                 'scenario': {
                     'scenarioText': scenario_text,
+                    'attackType': attack_type,
                     'specificDetails': {}
                 },
-                'questions': []
+                'questions': [
+                    {
+                        'questionText': "What is the most important step in cybersecurity incident response?",
+                        'options': [
+                            "Report the incident to appropriate personnel",
+                            "Panic and shut down all systems",
+                            "Try to fix the issue without telling anyone",
+                            "Ignore the incident if it seems minor"
+                        ],
+                        'correctAnswerIndex': 0,
+                        'explanation': "Always report security incidents to the appropriate personnel or team."
+                    }
+                ]
             }
-        
-        # إعداد البيانات بصيغة JSON
-        scenario_text = ai_response.get('scenario', {}).get('scenarioText', '')
-        json_data = {
-            'scenario': {
-                'scenarioText': scenario_text,
-                'specificDetails': ai_response.get('scenario', {}).get('specificDetails', {})
-            },
-            'questions': ai_response.get('questions', [])
-        }
     
-    # إنشاء سيناريو جديد للمستخدم
+    # خطوة 3: إنشاء كائن سيناريو في قاعدة البيانات للمستخدم الحالي
     with transaction.atomic():
+        # إنشاء سيناريو جديد للمستخدم
+        scenario_text = json_data.get('scenario', {}).get('scenarioText', '')
         new_scenario = Scenario.objects.create(
             user=request.user,
             attack_type=attack_type_obj,
             scenario_text=scenario_text,
-            json_data=json_data  # تخزين البيانات بصيغة JSON
+            json_data=json_data  # تخزين البيانات المنظمة كاملة
         )
         
-        # إنشاء التفاصيل الخاصة بنوع الهجوم
-        specific_details = json_data.get('scenario', {}).get('specificDetails', {})
-        
-        if attack_type.lower() == 'ransomware':
-            # Add logic for ransomware-specific details here
-            pass
-            
-        # إنشاء الأسئلة والإجابات من البيانات المخزنة في JSON
-        for q_data in json_data.get('questions', []):
+        # خطوة 4: إنشاء الأسئلة والإجابات في قاعدة البيانات
+        questions_data = json_data.get('questions', [])
+        for q_data in questions_data:
+            # إنشاء سؤال
             question = Question.objects.create(
                 scenario=new_scenario,
                 question_text=q_data.get('questionText', ''),
@@ -99,15 +152,18 @@ def scenario_view(request, attack_type):
                 explanation=q_data.get('explanation', '')
             )
             
-            # إنشاء الخيارات
-            for i, opt_text in enumerate(q_data.get('options', [])):
+            # إنشاء الخيارات والإجابات
+            options = q_data.get('options', [])
+            correct_index = q_data.get('correctAnswerIndex', 0)
+            
+            for i, option_text in enumerate(options):
                 Answer.objects.create(
                     question=question,
-                    answer_text=opt_text,
-                    is_correct=(i == q_data.get('correctAnswerIndex', 0))
+                    answer_text=option_text,
+                    is_correct=(i == correct_index)
                 )
     
-    # الحصول على الأسئلة والإجابات للعرض
+    # خطوة 5: عرض السيناريو والأسئلة للمستخدم
     questions = Question.objects.filter(scenario=new_scenario).prefetch_related('answers')
     
     context = {
@@ -117,29 +173,8 @@ def scenario_view(request, attack_type):
     }
     
     return render(request, 'training/scenario.html', context)
-def get_random_existing_scenario(attack_type):
-    """
-    استرجاع سيناريو عشوائي من نفس النوع من قاعدة البيانات
-    """
-    try:
-        attack_type_obj = AttackType.objects.get(name__iexact=attack_type.lower())
-        # البحث عن سيناريوهات من نفس النوع
-        existing_scenarios = Scenario.objects.filter(
-            attack_type=attack_type_obj,
-            # التأكد من أن السيناريو ليس فارغًا وليس سيناريو افتراضي للاختبار
-            scenario_text__isnull=False,
-        ).exclude(
-            scenario_text__icontains="sample scenario for testing"
-        )
-        
-        if existing_scenarios.exists():
-            # اختيار سيناريو عشوائي
-            import random
-            return random.choice(existing_scenarios)
-    except Exception as e:
-        print(f"Error retrieving random scenario: {str(e)}")
-    
-    return None
+
+
 @login_required
 def scenario(request, scenario_id):
     """عرض سيناريو محدد بناءً على معرفه"""
@@ -150,10 +185,11 @@ def scenario(request, scenario_id):
         'scenario': scenario,
         'questions': questions,
         'attack_type': scenario.attack_type.name,
-        'scenario_id': scenario_id  # Keep the original parameter to maintain compatibility
+        'scenario_id': scenario_id
     }
     
     return render(request, 'training/scenario.html', context)
+
 
 @login_required
 def submit_answers(request, attack_type):
@@ -161,16 +197,28 @@ def submit_answers(request, attack_type):
     if request.method != 'POST':
         return redirect('training:select_attack')
     
-    # الحصول على نوع الهجوم والسيناريو
-    attack_type_obj = get_object_or_404(AttackType, name=attack_type.lower())
-    scenario = get_object_or_404(Scenario, attack_type=attack_type_obj)
+    # الحصول على آخر سيناريو للمستخدم من هذا النوع
+    attack_type_obj = get_object_or_404(AttackType, name__iexact=attack_type.lower())
+    
+    # البحث عن أحدث سيناريو للمستخدم من هذا النوع
+    try:
+        scenario = Scenario.objects.filter(
+            user=request.user,
+            attack_type=attack_type_obj
+        ).latest('created_at')
+    except Scenario.DoesNotExist:
+        messages.error(request, 'Scenario not found')
+        return redirect('training:select_attack')
     
     # الحصول على الأسئلة
     questions = Question.objects.filter(scenario=scenario).prefetch_related('answers')
+    total_questions = questions.count()
+    
+    if total_questions == 0:
+        messages.error(request, 'No questions found for this scenario')
+        return redirect('training:select_attack')
     
     # معالجة الإجابات
-    score = 0
-    total_questions = questions.count()
     correct_answers = 0
     
     with transaction.atomic():
@@ -210,7 +258,7 @@ def submit_answers(request, attack_type):
             feedback = "Try again. You might want to review the fundamentals of this type of attack."
         
         # حفظ نتيجة المستخدم
-        UserScenarioResult.objects.create(
+        result = UserScenarioResult.objects.create(
             user=request.user,
             scenario=scenario,
             score=correct_answers,
@@ -222,14 +270,16 @@ def submit_answers(request, attack_type):
     # إعداد سياق النتائج
     context = {
         'scenario': scenario,
-        'score': correct_answers,
+        'score': percentage,  # إرسال النسبة المئوية بدلاً من عدد الإجابات الصحيحة
+        'correct_answers': correct_answers,
         'total_questions': total_questions,
         'percentage': percentage,
         'feedback': feedback,
-        'scenario_id': scenario.scenario_id  # Keep for backward compatibility
+        'scenario_id': scenario.scenario_id
     }
     
     return render(request, 'training/feedback.html', context)
+
 
 @login_required
 def feedback(request, scenario_id):
@@ -246,13 +296,13 @@ def feedback(request, scenario_id):
         messages.warning(request, 'No results found for this scenario')
         return redirect('training:scenario', scenario_id=scenario_id)
     
-    # احصل على الإجابات المقدمة للحصول على تفاصيل حول ما تم الإجابة عليه بشكل صحيح أو خاطئ
+    # الحصول على الإجابات المقدمة للحصول على تفاصيل حول ما تم الإجابة عليه بشكل صحيح أو خاطئ
     responses = Response.objects.filter(
         user=request.user,
         scenario=scenario
     ).select_related('answer', 'answer__question')
     
-    # احصل على الأسئلة والإجابات الصحيحة
+    # الحصول على الأسئلة والإجابات الصحيحة
     questions = Question.objects.filter(scenario=scenario).prefetch_related('answers')
     
     # إنشاء قاموس للإجابات الصحيحة والإجابات المختارة
@@ -271,12 +321,13 @@ def feedback(request, scenario_id):
     
     context = {
         'scenario': scenario,
-        'score': user_result.score,
+        'score': user_result.percentage,  # إرسال النسبة المئوية بدلاً من عدد الإجابات الصحيحة
+        'correct_answers': user_result.score,
         'total_questions': user_result.total_questions,
         'percentage': user_result.percentage,
         'feedback': user_result.feedback,
         'question_data': question_data,
-        'scenario_id': scenario_id,  # Keep the original parameter
+        'scenario_id': scenario_id,
         'attack_type': scenario.attack_type.name
     }
     

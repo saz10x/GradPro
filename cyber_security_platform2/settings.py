@@ -17,7 +17,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
-GEMINI_API_KEY = os.getenv('AIzaSyB2Z0L9p8q_O93JFa_KgTRFsqzCpDmlHzY')
+GEMINI_API_KEY = 'AIzaSyB2Z0L9p8q_O93JFa_KgTRFsqzCpDmlHzY'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
