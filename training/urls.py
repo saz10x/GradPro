@@ -13,4 +13,5 @@ urlpatterns = [
     
     path('submit/<str:attack_type>/', views.submit_answers, name='submit_answers'),
     path('feedback/<int:scenario_id>/', views.feedback, name='feedback'),
+    path('download-feedback/<int:scenario_id>/', views.download_feedback_pdf, name='download_feedback_pdf'),
 ]

@@ -69,7 +69,7 @@ def generate_scenario(attack_type):
             "C": "Third option",
             "D": "Fourth option"
           }},
-          "answer": "A",
+          "answer": "...",
 
         }},
         // ... more questions

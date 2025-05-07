@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cybersecurity Training Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8e44ad;
+            margin-bottom: 10px;
+        }
+        .title {
+            font-size: 22px;
+            margin-bottom: 5px;
+            color: #8e44ad;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        .section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #8e44ad;
+            margin-bottom: 15px;
+        }
+        .overview {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .overview-item {
+            text-align: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            width: 30%;
+        }
+        .overview-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .overview-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8e44ad;
+        }
+        .scenario-details {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .feedback-content {
+            margin-bottom: 20px;
+        }
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 3px solid #8e44ad;
+            background-color: #f9f9f9;
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .answer {
+            margin-left: 20px;
+            margin-bottom: 5px;
+        }
+        .correct {
+            color: #28a745;
+        }
+        .incorrect {
+            color: #dc3545;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">CyberSecurity Training Platform</div>
+        <div class="title">Training Feedback Report</div>
+        <div class="subtitle">{{ scenario.attack_type.name|title }} Scenario</div>
+        <div class="subtitle">Date: {{ date }}</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Performance Overview</div>
+        <div class="overview">
+            <div class="overview-item">
+                <div class="overview-label">Score</div>
+                <div class="overview-value">{{ percentage|floatformat:0 }}%</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">Correct Answers</div>
+                <div class="overview-value">{{ correct_answers }}</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">Total Questions</div>
+                <div class="overview-value">{{ total_questions }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Scenario Overview</div>
+        <div class="scenario-details">
+            <p>{{ scenario.scenario_text|truncatewords:50 }}...</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Personalized Feedback</div>
+        <div class="feedback-content">
+            {{ feedback|safe|linebreaks }}
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Detailed Question Analysis</div>
+        {% for question_id, data in question_data.items %}
+        <div class="question-item">
+            <div class="question-text">Question: {{ data.question_text }}</div>
+            <div class="answer {% if data.is_correct %}correct{% else %}incorrect{% endif %}">
+                Your Answer: {{ data.selected_answer }} {% if data.is_correct %}✓{% else %}✗{% endif %}
+            </div>
+            <div class="answer correct">Correct Answer: {{ data.correct_answer }}</div>
+            {% if data.explanation %}
+            <div class="explanation">
+                <small><strong>Explanation:</strong> {{ data.explanation }}</small>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="footer">
+        <p>Generated for {{ user.get_full_name|default:user.username }} by CyberSecurity Training Platform</p>
+        <p>This report is confidential and for personal training purposes only.</p>
+    </div>
+</body>
+</html>
