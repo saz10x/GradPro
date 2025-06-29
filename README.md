@@ -1,2 +1,1 @@
-Final Draft for the Platfrom after complete all pages 
-You can find  the requirment in requirements_list.txt
+The Cybersecurity Training Platform signifies a notable progression in the field of cybersecurity education and training. By utilizing artificial intelligence to develop dynamic and realistic scenarios, this platform effectively addresses a significant shortcoming in existing training approaches.
